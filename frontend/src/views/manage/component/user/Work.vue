@@ -1,154 +1,146 @@
 <template>
-  <div style="background: linear-gradient(135deg, #fdfdfd 0%, #f5f4f4 100%); margin-bottom: 30px;">
-    <div>
-      <div style="padding: 20px;">
-        <div>
-          <a-card
-            :bordered="false"
-            hoverable
-            style="height: 100%; border-radius: 3px; box-shadow: 0 8px 16px rgba(121, 85, 72, 0.2);">
-            <a-row style="margin: 0 auto" :gutter="20">
-              <a-col :span="16" :offset="4">
-                <a-row>
-                  <a-col :span="24" style="font-size: 15px;font-family: SimHei;" v-if="nextFlag == 1">
-                    <div style="background: #f8f6f4; padding: 20px; border-radius: 3px; box-shadow: 0 4px 8px rgba(121, 85, 72, 0.1);">
-                      <a-form :form="form" layout="vertical">
-                        <a-row :gutter="20">
-                          <a-col :span="6">
-                            <a-form-item label='需求名称' v-bind="formItemLayout">
-                              <a-input v-decorator="[
-                                'orderName',
-                                { rules: [{ required: true, message: '请输入需求名称!' }] }
-                                ]"/>
-                            </a-form-item>
-                          </a-col>
-                          <a-col :span="6">
-                            <a-form-item label='需求类型' v-bind="formItemLayout">
-                              <a-input v-decorator="[
-                                'goodsType',
-                                { rules: [{ required: true, message: '请输入需求类型!' }] }
-                                ]"/>
-                            </a-form-item>
-                          </a-col>
-<!--                          <a-col :span="6">-->
-<!--                            <a-form-item label='订单类型' v-bind="formItemLayout">-->
-<!--                              <a-select v-decorator="[-->
-<!--        'orderType',-->
-<!--        { rules: [{ required: true, message: '请选择订单类型!' }] }-->
-<!--        ]">-->
-<!--                                <a-select-option value="1">维修</a-select-option>-->
-<!--                                <a-select-option value="2">回收</a-select-option>-->
-<!--                              </a-select>-->
-<!--                            </a-form-item>-->
-<!--                          </a-col>-->
+  <div class="work-container">
+    <a-row style="margin: 0 auto;" :gutter="20">
+      <a-col :span="12" :offset="6">
+        <a-row style="margin-top: 35px">
+          <a-col :span="24" class="form-title-wrapper" v-if="nextFlag == 1">
+            <div class="title-section">
+              <div class="title-icon">📝</div>
+              <h2 class="form-main-title">发布个人需求</h2>
+              <p class="form-subtitle">请填写您的需求信息，我们将为您匹配合适的服务者</p>
+            </div>
+            <div class="form-content-wrapper">
+              <a-form :form="form" layout="vertical">
+                <a-row :gutter="20">
+                  <a-col :span="8">
+                    <a-form-item label='需求名称' class="enhanced-form-item">
+                      <a-input
+                        v-decorator="[
+                                 'orderName',
+                                 { rules: [{ required: true, message: '请输入需求名称!' }] }
+                               ]"
+                        placeholder="请输入需求名称"
+                        class="enhanced-input"
+                      />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="8">
+                    <a-form-item label='需求类型' class="enhanced-form-item">
+                      <a-input
+                        v-decorator="[
+                                 'goodsType',
+                                 { rules: [{ required: true, message: '请输入需求类型!' }] }
+                               ]"
+                        placeholder="请输入需求类型"
+                        class="enhanced-input"
+                      />
+                    </a-form-item>
+                  </a-col>
 
-                          <!-- 预估价格 -->
-                          <a-col :span="6">
-                            <a-form-item label='预估价格' v-bind="formItemLayout">
-                              <a-input-number
-                                style="width: 100%"
-                                v-decorator="['forecastPrice']"
-                                :min="0"
-                                :step="0.01"
-                                placeholder="元"/>
-                            </a-form-item>
-                          </a-col>
+                  <!-- 预估价格 -->
+                  <a-col :span="8">
+                    <a-form-item label='预估价格' class="enhanced-form-item">
+                      <a-input-number
+                        class="enhanced-input-number"
+                        v-decorator="['forecastPrice']"
+                        :min="0"
+                        :step="0.01"
+                        placeholder="请输入金额"
+                        style="width: 100%"
+                      />
+                    </a-form-item>
+                  </a-col>
 
-                          <!-- 服务方式 -->
-<!--                          <a-col :span="6">-->
-<!--                            <a-form-item label='服务方式' v-bind="formItemLayout">-->
-<!--                              <a-select v-decorator="[-->
-<!--        'orderMethod',-->
-<!--        { rules: [{ required: true, message: '请选择服务方式!' }] }-->
-<!--        ]">-->
-<!--                                <a-select-option value="1">上门</a-select-option>-->
-<!--                                <a-select-option value="2">邮寄</a-select-option>-->
-<!--                              </a-select>-->
-<!--                            </a-form-item>-->
-<!--                          </a-col>-->
+                  <a-col :span="24"></a-col>
 
-                          <a-col :span="6" v-if="form.getFieldValue('orderMethod') === '1'">
-                            <a-form-item label='联系信息' v-bind="formItemLayout">
-                              <a-select style="width: 100%" v-decorator="[
-                                'startAddressId',
-                                { rules: [{ required: true, message: '请输入联系信息!' }] }
-                                ]">
-                                <a-select-option v-for="(item, index) in addressList" :value="item.id" :key="index">{{ item.address }}</a-select-option>
-                              </a-select>
-                            </a-form-item>
-                          </a-col>
-                          <a-col :span="24"></a-col>
-                          <a-col :span="24">
-                            <a-form-item label='需求描述' v-bind="formItemLayout">
-                              <a-textarea :rows="3" v-decorator="[
-                              'content',
-                               { rules: [{ required: true, message: '请输入需求描述!' }] }
-                              ]"/>
-                            </a-form-item>
-                          </a-col>
-                          <a-col :span="24">
-                            <a-form-item label='需求图片' v-bind="formItemLayout">
-                              <a-upload
-                                name="avatar"
-                                action="http://127.0.0.1:9527/file/fileUpload/"
-                                list-type="picture-card"
-                                :file-list="fileList"
-                                @preview="handlePreview"
-                                @change="picHandleChange"
-                              >
-                                <div v-if="fileList.length < 8">
-                                  <a-icon type="plus" />
-                                  <div class="ant-upload-text">
-                                    Upload
-                                  </div>
-                                </div>
-                              </a-upload>
-                              <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                                <img alt="example" style="width: 100%" :src="previewImage" />
-                              </a-modal>
-                            </a-form-item>
-                          </a-col>
-                          <a-col :span="24">
-                            <a-form-item label='需求视频' v-bind="formItemLayout">
-                              <a-upload
-                                name="avatar"
-                                action="http://127.0.0.1:9527/file/fileUpload/"
-                                list-type="picture-card"
-                                :file-list="videoFileList"
-                                @preview="handlePreviewVideo"
-                                @change="picHandleChangeVideo"
-                              >
-                                <div v-if="videoFileList.length < 8">
-                                  <a-icon type="plus" />
-                                  <div class="ant-upload-text">
-                                    Upload
-                                  </div>
-                                </div>
-                              </a-upload>
-                              <a-modal :visible="previewVisibleVideo" :footer="null" @cancel="handleCancelVideo">
-                                <img alt="example" style="width: 100%" :src="previewImageVideo" />
-                              </a-modal>
-                            </a-form-item>
-                          </a-col>
-                        </a-row>
-                        <div style="text-align: center; margin-top: 20px;">
-                          <a-button
-                            type="primary"
-                            @click="fetch"        style="border-radius: 3px; background: linear-gradient(45deg, #8d6e63, #a1887f); border: none; padding: 0 40px; height: 40px;"
-                          >
-                            发布
-                          </a-button>
-                        </div>
-                      </a-form>
-                    </div>
+                  <a-col :span="24">
+                    <a-form-item label='需求描述' class="enhanced-form-item">
+                      <a-textarea
+                        :rows="4"
+                        v-decorator="[
+                                 'content',
+                                 { rules: [{ required: true, message: '请输入需求描述!' }] }
+                               ]"
+                        placeholder="请详细描述您的需求..."
+                        class="enhanced-textarea"
+                      />
+                    </a-form-item>
+                  </a-col>
+
+                  <a-col :span="24">
+                    <a-form-item label='需求图片' class="enhanced-form-item upload-form-item">
+                      <div class="upload-wrapper">
+                        <a-upload
+                          name="avatar"
+                          action="http://127.0.0.1:9527/file/fileUpload/"
+                          list-type="picture-card"
+                          :file-list="fileList"
+                          @preview="handlePreview"
+                          @change="picHandleChange"
+                          class="custom-upload"
+                        >
+                          <div v-if="fileList.length < 8" class="upload-content">
+                            <div class="upload-icon">
+                              <a-icon type="plus" />
+                            </div>
+                            <div class="upload-text">
+                              <span>点击上传图片</span>
+                              <p>最多可上传 8 张</p>
+                            </div>
+                          </div>
+                        </a-upload>
+                        <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                          <img alt="example" style="width: 100%" :src="previewImage" />
+                        </a-modal>
+                      </div>
+                    </a-form-item>
+                  </a-col>
+
+                  <a-col :span="24">
+                    <a-form-item label='需求视频' class="enhanced-form-item upload-form-item">
+                      <div class="upload-wrapper">
+                        <a-upload
+                          name="avatar"
+                          action="http://127.0.0.1:9527/file/fileUpload/"
+                          list-type="picture-card"
+                          :file-list="videoFileList"
+                          @preview="handlePreviewVideo"
+                          @change="picHandleChangeVideo"
+                          class="custom-upload"
+                        >
+                          <div v-if="videoFileList.length < 8" class="upload-content">
+                            <div class="upload-icon video-icon">
+                              <a-icon type="video-camera" />
+                            </div>
+                            <div class="upload-text">
+                              <span>点击上传视频</span>
+                              <p>最多可上传 8 个</p>
+                            </div>
+                          </div>
+                        </a-upload>
+                        <a-modal :visible="previewVisibleVideo" :footer="null" @cancel="handleCancelVideo">
+                          <img alt="example" style="width: 100%" :src="previewImageVideo" />
+                        </a-modal>
+                      </div>
+                    </a-form-item>
                   </a-col>
                 </a-row>
-              </a-col>
-            </a-row>
-          </a-card>
-        </div>
-      </div>
-    </div>
+                <div class="submit-button-wrapper">
+                  <a-button
+                    type="primary"
+                    @click="fetch"
+                    class="submit-button"
+                  >
+                    <a-icon type="send" style="margin-right: 8px;"/>
+                    立即发布
+                  </a-button>
+                </div>
+              </a-form>
+            </div>
+          </a-col>
+        </a-row>
+      </a-col>
+    </a-row>
     <Map :orderData="orderMapView.merchantInfo"
          @close="handleorderMapViewClose"
          :orderShow="orderMapView.visiable">
@@ -404,10 +396,10 @@ export default {
 
       this.form.validateFields((err, values) => {
         // 当服务方式为上门(1)时，取货地址为必填项
-        if (values.orderMethod === '1' && !values.startAddressId) {
-          this.$message.warn('请选择取货地址')
-          return false
-        }
+        // if (values.orderMethod === '1' && !values.startAddressId) {
+        //   this.$message.warn('请选择取货地址')
+        //   return false
+        // }
         values.flawImages = flawImages.length > 0 ? flawImages.join(',') : null
         values.video = videoList.length > 0 ? videoList.join(',') : null
         values.images = images.length > 0 ? images.join(',') : null
@@ -431,179 +423,302 @@ export default {
 }
 </script>
 
-<style scoped>
->>> .ant-card-meta-title {
-  font-size: 13px;
-  font-family: SimHei;
-}
->>> .ant-card-meta-description {
-  font-size: 12px;
-  font-family: SimHei;
-}
->>> .ant-divider-with-text-left {
-  margin: 0;
+<style scoped> /* 容器背景渐变 */
+.work-container {
+  background: linear-gradient(135deg, #f6f8fb 0%, #eef1f5 100%);
+  min-height: calc(100vh - 120px);
+  padding-bottom: 30px;
 }
 
->>> .ant-card-head-title {
-  font-size: 13px;
-  font-family: SimHei;
+.page-padding {
+  padding: 24px 20px;
 }
->>> .ant-card-extra {
-  font-size: 13px;
-  font-family: SimHei;
-}
-.ant-carousel >>> .slick-slide {
-  text-align: center;
-  height: 250px;
-  line-height: 250px;
+
+/* 主卡片样式 */
+.main-card {
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
   overflow: hidden;
 }
 
-</style>
-<style scoped>/* 增加字体引入 */
+/* 标题区域 */
+.form-title-wrapper {
+  margin-bottom: 0;
+}
 
-/* 基础样式调整 */
->>> .ant-card-meta-title {
+.title-section {
+  text-align: center;
+  padding: 32px 20px 24px;
+  background: linear-gradient(135deg, #6deca9 0%, #0c880c 100%);
+  margin: -16px -16px 24px -16px;
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.title-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-10%, -10%) scale(1.05); }
+}
+
+.title-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.form-main-title {
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.form-subtitle {
+  color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
-  font-family: 'Noto Serif SC', SimHei;
-}
-
->>> .ant-card-meta-description {
-  font-size: 13px;
-  font-family: 'Noto Serif SC', SimHei;
-}
-
->>> .ant-divider-with-text-left {
   margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
->>> .ant-card-head-title {
-  font-size: 16px;
-  font-family: 'Noto Serif SC', SimHei;
+/* 表单内容区域 */
+.form-content-wrapper {
+  padding: 12px 24px 32px;
+}
+
+/* 表单项增强样式 */
+.enhanced-form-item {
+  margin-bottom: 24px;
+}
+
+.enhanced-form-item >>> .ant-form-item-label > label {
+  color: #2d3748;
   font-weight: 600;
+  font-size: 15px;
+  position: relative;
+  padding-left: 12px;
 }
 
->>> .ant-card-extra {
+.enhanced-form-item >>> .ant-form-item-label > label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+/* 输入框样式 */
+.enhanced-input >>> .ant-input,
+.enhanced-textarea >>> .ant-input {
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  padding: 12px 16px;
   font-size: 14px;
-  font-family: 'Noto Serif SC', SimHei;
+  transition: all 0.3s ease;
+  background: #ffffff;
 }
 
-/* 表单元素美化 */
->>> .ant-input, >>> .ant-select-selection {
-  border-radius: 8px !important;
-  border-color: #d7ccc8 !important;
+.enhanced-input >>> .ant-input:hover,
+.enhanced-textarea >>> .ant-input:hover {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
->>> .ant-input:hover, >>> .ant-select-selection:hover {
-  border-color: #a1887f !important;
+.enhanced-input >>> .ant-input:focus,
+.enhanced-textarea >>> .ant-input:focus {
+  border-color: #764ba2;
+  box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.15);
 }
 
->>> .ant-form-item-label label {
-  color: #5d4037 !important;
-  font-weight: 500 !important;
-}
-
-/* 按钮美化 */
->>> .ant-btn-primary {
-  background: linear-gradient(45deg, #8d6e63, #a1887f) !important;
-  border: none !important;
-  border-radius: 8px !important;
-}
-
-/* 上传组件美化 */
->>> .ant-upload.ant-upload-drag {
-  background: #fffcf5 !important;
-  border-radius: 10px !important;
-}
-
->>> .ant-upload.ant-upload-drag:not(.ant-upload-disabled):hover {
-  border-color: #8d6e63 !important;
-}
-</style>
-<style scoped>/* Markdown内容样式 */
-.markdown-body {
-  line-height: 1.6;
-  color: #333;
-  font-family: 'Noto Serif SC', SimHei;
-}
-
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3,
-.markdown-body h4,
-.markdown-body h5,
-.markdown-body h6 {
-  color: #5d4037;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-}
-
-.markdown-body h1 {
-  font-size: 1.8em;
-  border-bottom: 2px solid #e0d6cc;
-  padding-bottom: 0.3em;
-}
-
-.markdown-body h2 {
-  font-size: 1.5em;
-  border-bottom: 1px solid #e0d6cc;
-  padding-bottom: 0.3em;
-}
-
-.markdown-body p {
-  margin: 0.8em 0;
-}
-
-.markdown-body ul,
-.markdown-body ol {
-  padding-left: 2em;
-  margin: 0.8em 0;
-}
-
-.markdown-body li {
-  margin: 0.3em 0;
-}
-
-.markdown-body code {
-  background-color: #f5f0e6;
-  padding: 0.2em 0.4em;
-  border-radius: 3px;
-  font-family: monospace;
-}
-
-.markdown-body pre {
-  background-color: #f5f0e6;
-  padding: 1em;
-  border-radius: 5px;
-  overflow-x: auto;
-}
-
-.markdown-body pre code {
-  background: none;
-  padding: 0;
-}
-
-.markdown-body blockquote {
-  border-left: 4px solid #d7ccc8;
-  padding-left: 1em;
-  margin: 1em 0;
-  color: #666;
-}
-
-.markdown-body table {
-  border-collapse: collapse;
+.enhanced-input-number >>> .ant-input-number {
   width: 100%;
-  margin: 1em 0;
+  border-radius: 10px;
+  border: 2px solid #e2e8f0;
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
 
-.markdown-body th,
-.markdown-body td {
-  border: 1px solid #d7ccc8;
-  padding: 0.5em;
-  text-align: left;
+.enhanced-input-number >>> .ant-input-number:hover {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
-.markdown-body th {
-  background-color: #f0e6d2;
+.enhanced-input-number >>> .ant-input-number:focus {
+  border-color: #764ba2;
+  box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.15);
 }
+
+/* 上传组件样式 */
+.upload-form-item >>> .ant-form-item-label > label {
+  display: flex;
+  align-items: center;
+}
+
+.upload-wrapper {
+  width: 100%;
+}
+
+.custom-upload >>> .ant-upload.ant-upload-select-picture-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px dashed #cbd5e0;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.custom-upload >>> .ant-upload.ant-upload-select-picture-card:hover {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #eef2ff 0%, #e6f7ff 100%);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.upload-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.upload-icon .anticon {
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.custom-upload >>> .ant-upload.ant-upload-select-picture-card:hover .upload-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.video-icon {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+}
+
+.custom-upload >>> .ant-upload.ant-upload-select-picture-card:hover .video-icon {
+  box-shadow: 0 6px 16px rgba(245, 87, 108, 0.4);
+}
+
+.upload-text {
+  text-align: center;
+  color: #718096;
+}
+
+.upload-text span {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.upload-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+/* 已上传的文件列表样式 */
+.custom-upload >>> .ant-upload-list-picture-card .ant-upload-list-item {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.custom-upload >>> .ant-upload-list-picture-card .ant-upload-list-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* 提交按钮 */
+.submit-button-wrapper {
+  text-align: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px dashed #e2e8f0;
+}
+
+.submit-button {
+  background: linear-gradient(135deg, #1be36b 0%, #19864b 100%);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 60px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  height: auto;
+}
+
+.submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.5);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .form-main-title {
+    font-size: 22px;
+  }
+
+  .title-icon {
+    font-size: 36px;
+  }
+
+  .submit-button {
+    padding: 12px 40px;
+    font-size: 15px;
+  }
+}
+
 </style>

@@ -71,15 +71,6 @@
           <span v-if="orderInfo.goodsType == 9">服饰</span>
           <span v-if="orderInfo.goodsType == 10">其他</span>
         </a-col>
-        <a-col :span="6"><b>需求重量：</b>
-          {{ orderInfo.weight ? orderInfo.weight : '- -' }}KG
-        </a-col>
-        <a-col :span="6"><b>需求高度：</b>
-          {{ orderInfo.height ? orderInfo.height : '- -' }}厘米
-        </a-col>
-        <a-col :span="6"><b>需求宽度：</b>
-          {{ orderInfo.width ? orderInfo.width : '- -' }}厘米
-        </a-col>
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">

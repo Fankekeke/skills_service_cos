@@ -69,21 +69,6 @@
       </a-row>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col :span="6"><b>需求类型：</b>
-          {{ orderInfo.goodsType ? orderInfo.goodsType : '- -' }}
-        </a-col>
-        <a-col :span="6"><b>需求重量：</b>
-          {{ orderInfo.weight ? orderInfo.weight : '- -' }}KG
-        </a-col>
-        <a-col :span="6"><b>需求高度：</b>
-          {{ orderInfo.height ? orderInfo.height : '- -' }}厘米
-        </a-col>
-        <a-col :span="6"><b>需求宽度：</b>
-          {{ orderInfo.width ? orderInfo.width : '- -' }}厘米
-        </a-col>
-      </a-row>
-      <br/>
-      <a-row style="padding-left: 24px;padding-right: 24px;">
         <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">需求描述</span></a-col>
         <a-col :span="24">
           {{ orderData.content ? orderData.content : '- -' }}

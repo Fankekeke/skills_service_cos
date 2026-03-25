@@ -35,10 +35,6 @@
           <span v-if="orderInfo.status === '2'" style="color: orange">服务中</span>
           <span v-if="orderInfo.status === '3'" style="color: green">已完成</span>
         </a-col>
-        <a-col :span="6"><b>订单类型：</b>
-          <span v-if="orderInfo.type === '0'">堂食</span>
-          <span v-if="orderInfo.type === '1'">外送</span>
-        </a-col>
         <a-col :span="6"><b>下单时间：</b>
           {{ orderInfo.createDate }}
         </a-col>

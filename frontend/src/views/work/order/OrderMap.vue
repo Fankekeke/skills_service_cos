@@ -98,26 +98,11 @@
                   </a-row>
                   <br/>
                   <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col :span="8"><b>服务方式：</b>
-                      <span v-if="orderData.orderMethod == 1">上门</span>
-                      <span v-if="orderData.orderMethod == 2">邮寄</span>
-                    </a-col>
                     <a-col :span="8"><b>需求类型：</b>
                       {{ orderInfo.goodsType ? orderInfo.goodsType : '- -' }}
                     </a-col>
-                    <a-col :span="8"><b>需求重量：</b>
-                      {{ orderInfo.weight ? orderInfo.weight : '- -' }}KG
-                    </a-col>
                   </a-row>
                   <br/>
-                  <a-row style="padding-left: 24px;padding-right: 24px;">
-                    <a-col :span="8"><b>需求高度：</b>
-                      {{ orderInfo.height ? orderInfo.height : '- -' }}厘米
-                    </a-col>
-                    <a-col :span="8"><b>需求宽度：</b>
-                      {{ orderInfo.width ? orderInfo.width : '- -' }}厘米
-                    </a-col>
-                  </a-row>
                 </div>
                 <br/>
                 <br/>

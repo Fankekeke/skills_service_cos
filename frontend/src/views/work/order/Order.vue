@@ -240,20 +240,6 @@ export default {
           </a-popover>
         }
       }, {
-        title: '订单类型',
-        dataIndex: 'orderType',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case '1':
-              return <a-tag>维修</a-tag>
-            case '2':
-              return <a-tag>回收</a-tag>
-            default:
-              return '- -'
-          }
-        },
-        ellipsis: true
-      }, {
         title: '订单状态',
         dataIndex: 'status',
         customRender: (text, row, index) => {
