@@ -41,6 +41,17 @@ public class StaffSkillController {
     }
 
     /**
+     * 获取技能列表
+     *
+     * @param key 技能名称
+     * @return 结果
+     */
+    @GetMapping("/list")
+    public R querySkillList(String key) {
+        return R.ok(staffSkillService.querySkillList(key));
+    }
+
+    /**
      * 获取ID获取服务技能详情
      *
      * @param id 主键

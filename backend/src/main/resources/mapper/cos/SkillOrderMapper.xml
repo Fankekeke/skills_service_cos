@@ -2,4 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.cos.dao.SkillOrderMapper">
 
+    <!-- 分页获取技能订单信息 -->
+    <select id="queryPage" resultType="java.util.LinkedHashMap">
+        SELECT
+        so.id,
+        so.order_sn,
+        so.buyer_id,
+        so.skill_id,
+        so.staff_id,
+        so.snapshot_title,
+        so.snapshot_price,
+        so.total_amount,
+        so.order_status,
+        so.pay_time,
+        so.create_time,
+        ss.title,
+        ss.description,
+        ss.price,
+        ss.unit,
+        ss.STATUS,
+        si.NAME AS staffName,
+        si.CODE AS staffCode,
+        si.images AS staffImages,
+        ui.NAME AS userName,
+        ui.images AS userImages,
+        ui.phone
+        FROM
+        skill_order so
+        LEFT JOIN staff_skill ss ON (ss.)
+        LEFT JOIN staff_info si ON (si.id = ss.staff_id)
+        LEFT JOIN user_info ui ON (ui.id = so.user_id)
+        WHERE
+        1 = 1
+        <if test="staffSkill.title != null and staffSkill.title != ''">
+            AND ss.title LIKE CONCAT('%',#{staffSkill.title},'%')
+        </if>
+        <if test="staffSkill.staffName != null and staffSkill.staffName != ''">
+            AND si.NAME LIKE CONCAT('%',#{staffSkill.staffName},'%')
+        </if>
+        <if test="staffSkill.userName != null and staffSkill.userName != ''">
+            AND ui.NAME LIKE CONCAT('%',#{staffSkill.userName},'%')
+        </if>
+        ORDER BY
+        so.create_time DESC
+    </select>
 </mapper>

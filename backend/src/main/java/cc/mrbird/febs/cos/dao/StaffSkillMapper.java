@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -21,4 +22,12 @@ public interface StaffSkillMapper extends BaseMapper<StaffSkill> {
      * @return 结果
      */
     IPage<LinkedHashMap<String, Object>> queryPage(Page<StaffSkill> page, @Param("staffSkill") StaffSkill staffSkill);
+
+    /**
+     * 获取技能列表
+     *
+     * @param key 关键字
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> querySkillList(@Param("key") String key);
 }

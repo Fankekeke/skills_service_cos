@@ -2,4 +2,63 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.cos.dao.StaffSkillMapper">
 
+    <!-- 分页获取服务技能信息 -->
+    <select id="queryPage" resultType="java.util.LinkedHashMap">
+        SELECT
+        ss.id,
+        ss.staff_id,
+        ss.title,
+        ss.description,
+        ss.price,
+        ss.unit,
+        ss.status,
+        ss.create_time,
+        ss.update_time,
+
+        si.NAME AS staffName,
+        si.CODE AS staffCode,
+        si.images AS staffImages
+        FROM
+        staff_skill ss
+        LEFT JOIN staff_info si ON (si.id = ss.staff_id)
+        WHERE
+        1 = 1
+        <if test="staffSkill.title != null and staffSkill.title != ''">
+            AND ss.title LIKE CONCAT('%',#{staffSkill.title},'%')
+        </if>
+        <if test="staffSkill.status != null and staffSkill.status != ''">
+            AND ss.status = #{staffSkill.status}
+        </if>
+        <if test="staffSkill.staffName != null and staffSkill.staffName != ''">
+            AND si.NAME LIKE CONCAT('%',#{staffSkill.staffName},'%')
+        </if>
+        ORDER BY
+        ss.create_time DESC
+    </select>
+
+    <!-- 获取技能列表 -->
+    <select id="querySkillList" resultType="java.util.LinkedHashMap">
+        SELECT
+        ss.id,
+        ss.staff_id,
+        ss.title,
+        ss.description,
+        ss.price,
+        ss.unit,
+        ss.status,
+        ss.create_time,
+        ss.update_time,
+
+        si.NAME AS staffName,
+        si.CODE AS staffCode,
+        si.images AS staffImages
+        FROM
+        staff_skill ss
+        LEFT JOIN staff_info si ON (si.id = ss.staff_id)
+        WHERE
+        1 = 1
+        AND ss.title LIKE CONCAT('%',#{key},'%')
+        ORDER BY
+        ss.create_time DESC
+    </select>
 </mapper>

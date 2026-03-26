@@ -54,8 +54,11 @@ public class SkillOrderController {
      */
     @PostMapping
     public R save(SkillOrder skillOrder) {
+        skillOrder.setOrderSn("SN-" + System.currentTimeMillis());
         skillOrder.setCreateTime(DateUtil.formatDateTime(new Date()));
-        return R.ok(skillOrderService.save(skillOrder));
+        skillOrder.setOrderStatus(0);
+        skillOrderService.save(skillOrder);
+        return R.ok();
     }
 
     /**

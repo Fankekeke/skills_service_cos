@@ -51,6 +51,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     private final IBulletinInfoService bulletinInfoService;
 
+    private final ISkillOrderService skillOrderService;
+
     /**
      * 分页获取订单信息
      *
@@ -285,20 +287,34 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      */
     @Override
     public boolean orderPay(String orderCode) {
-        // 获取订单信息
-        OrderInfo orderInfo = this.getOne(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getCode, orderCode));
-        orderInfo.setStatus("2");
-        orderInfo.setPayDate(DateUtil.formatDateTime(new Date()));
+        Integer userId = null;
+        BigDecimal totalAmount = null;
+        if (orderCode.contains("SN-")) {
+            SkillOrder skillOrder = skillOrderService.getOne(Wrappers.<SkillOrder>lambdaQuery().eq(SkillOrder::getOrderSn, orderCode));
+            skillOrder.setOrderStatus(1);
+            skillOrder.setPayTime(DateUtil.formatDateTime(new Date()));
+            skillOrderService.updateById(skillOrder);
+            userId = Math.toIntExact(skillOrder.getBuyerId());
+            totalAmount = skillOrder.getTotalAmount();
+        } else {
+            // 获取订单信息
+            OrderInfo orderInfo = this.getOne(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getCode, orderCode));
+            orderInfo.setStatus("2");
+            orderInfo.setPayDate(DateUtil.formatDateTime(new Date()));
+            this.updateById(orderInfo);
+            userId = orderInfo.getUserId();
+            totalAmount = orderInfo.getAfterOrderPrice();
+        }
 
         // 用户添加积分
-        UserInfo userInfo = userInfoService.getById(orderInfo.getUserId());
-        userInfo.setIntegral(NumberUtil.add(userInfo.getIntegral(), orderInfo.getIntegral()));
+        UserInfo userInfo = userInfoService.getById(userId);
+        userInfo.setIntegral(NumberUtil.add(userInfo.getIntegral(), totalAmount));
 
         // 用户下单发送邮件
         if (StrUtil.isNotEmpty(userInfo.getMail())) {
             Context context = new Context();
             context.setVariable("today", DateUtil.formatDate(new Date()));
-            context.setVariable("custom", userInfo.getName() + "，您好，消费订单 " + orderCode + "，已支付" + orderInfo.getAfterOrderPrice() + "元。");
+            context.setVariable("custom", userInfo.getName() + "，您好，消费订单 " + orderCode + "，已支付" + totalAmount + "元。");
             String emailContent = templateEngine.process("registerEmail", context);
             mailService.sendHtmlMail(userInfo.getMail(), DateUtil.formatDate(new Date()) + "支付通知", emailContent);
         }
@@ -306,7 +322,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 更新用户积分
         userInfoService.updateById(userInfo);
         // 更新订单状态
-        return this.updateById(orderInfo);
+        return true;
     }
 
     /**

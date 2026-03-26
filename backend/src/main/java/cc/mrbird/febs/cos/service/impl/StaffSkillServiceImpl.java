@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @author FanK
@@ -26,5 +27,16 @@ public class StaffSkillServiceImpl extends ServiceImpl<StaffSkillMapper, StaffSk
     @Override
     public IPage<LinkedHashMap<String, Object>> queryPage(Page<StaffSkill> page, StaffSkill staffSkill) {
         return baseMapper.queryPage(page, staffSkill);
+    }
+
+    /**
+     * 获取技能列表
+     *
+     * @param key 关键字
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> querySkillList(String key) {
+        return baseMapper.querySkillList(key);
     }
 }
