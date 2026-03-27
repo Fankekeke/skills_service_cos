@@ -57,6 +57,8 @@ public class StaffSkill implements Serializable {
      */
     private Integer status;
 
+    private String images;
+
     private String createTime;
 
     private String updateTime;

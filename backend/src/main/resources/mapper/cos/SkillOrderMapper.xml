@@ -19,6 +19,7 @@
         ss.title,
         ss.description,
         ss.price,
+        ss.images,
         ss.unit,
         ss.STATUS,
         si.NAME AS staffName,
@@ -34,8 +35,8 @@
         LEFT JOIN user_info ui ON (ui.id = so.user_id)
         WHERE
         1 = 1
-        <if test="staffSkill.title != null and staffSkill.title != ''">
-            AND ss.title LIKE CONCAT('%',#{staffSkill.title},'%')
+        <if test="staffSkill.snapshotTitle != null and staffSkill.snapshotTitle != ''">
+            AND so.snapshot_title LIKE CONCAT('%',#{staffSkill.title},'%')
         </if>
         <if test="staffSkill.staffName != null and staffSkill.staffName != ''">
             AND si.NAME LIKE CONCAT('%',#{staffSkill.staffName},'%')

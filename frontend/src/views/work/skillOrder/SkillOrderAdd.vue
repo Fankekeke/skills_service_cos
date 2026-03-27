@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="新增技能服务" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="新增服务订单" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="onClose">
         取消
@@ -11,55 +11,50 @@
     <a-form :form="form" layout="vertical">
       <a-row :gutter="20">
         <a-col :span="12">
-          <a-form-item label='技能服务标题' v-bind="formItemLayout">
+          <a-form-item label='服务订单标题' v-bind="formItemLayout">
             <a-input v-decorator="[
             'title',
-            { rules: [{ required: true, message: '请输入技能标题!' }] }
+            { rules: [{ required: true, message: '请输入名称!' }] }
             ]"/>
           </a-form-item>
         </a-col>
-        <a-col :span="6">
-          <a-form-item label='服务价格' v-bind="formItemLayout">
-            <a-input-number
-              v-decorator="[
-                'price',
-                { rules: [{ required: true, message: '请输入服务价格!' }] }
-              ]"
-              :min="0"
-              :step="0.01"
-              placeholder="请输入价格"              style="width: 100%"
-            />
+        <a-col :span="12">
+          <a-form-item label='上传人' v-bind="formItemLayout">
+            <a-input v-decorator="[
+            'publisher',
+            { rules: [{ required: true, message: '请输入上传人!' }] }
+            ]"/>
           </a-form-item>
         </a-col>
-        <a-col :span="6">
-          <a-form-item label='计价单位' v-bind="formItemLayout">
+        <a-col :span="12">
+          <a-form-item label='服务订单类型' v-bind="formItemLayout">
             <a-select v-decorator="[
-              'unit',
-              { rules: [{ required: true, message: '请选择计价单位!' }] }
+              'type',
+              { rules: [{ required: true, message: '请输入服务订单类型!' }] }
               ]">
-              <a-select-option value="次">次</a-select-option>
-              <a-select-option value="小时">小时</a-select-option>
-              <a-select-option value="天">天</a-select-option>
+              <a-select-option value="1">系统服务订单</a-select-option>
+              <a-select-option value="2">活动通知</a-select-option>
+              <a-select-option value="3">紧急消息</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label='技能服务状态' v-bind="formItemLayout">
+          <a-form-item label='服务订单状态' v-bind="formItemLayout">
             <a-select v-decorator="[
-              'status',
-              { rules: [{ required: true, message: '请选择技能服务状态!' }] }
+              'rackUp',
+              { rules: [{ required: true, message: '请输入服务订单状态!' }] }
               ]">
               <a-select-option value="0">下架</a-select-option>
-              <a-select-option value="1">正常</a-select-option>
+              <a-select-option value="1">已发布</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="24">
-          <a-form-item label='详细服务描述' v-bind="formItemLayout">
+          <a-form-item label='服务订单内容' v-bind="formItemLayout">
             <a-textarea :rows="6" v-decorator="[
-            'description',
-             { rules: [{ required: true, message: '请输入详细服务描述!' }] }
-            ]" placeholder="请详细描述服务内容"/>
+            'content',
+             { rules: [{ required: true, message: '请输入名称!' }] }
+            ]"/>
           </a-form-item>
         </a-col>
         <a-col :span="24">
@@ -162,10 +157,9 @@ export default {
       })
       this.form.validateFields((err, values) => {
         values.images = images.length > 0 ? images.join(',') : null
-        values.staffId = this.currentUser.userId
         if (!err) {
           this.loading = true
-          this.$post('/cos/staff-skill', {
+          this.$post('/cos/skill-order', {
             ...values
           }).then((r) => {
             this.reset()

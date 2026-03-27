@@ -12,6 +12,7 @@
         ss.price,
         ss.unit,
         ss.status,
+        ss.images,
         ss.create_time,
         ss.update_time,
 
@@ -46,6 +47,7 @@
         ss.price,
         ss.unit,
         ss.status,
+        ss.images,
         ss.create_time,
         ss.update_time,
 
