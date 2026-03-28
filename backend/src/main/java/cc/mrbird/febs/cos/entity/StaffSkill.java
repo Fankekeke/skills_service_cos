@@ -2,6 +2,7 @@ package cc.mrbird.febs.cos.entity;
 
 import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -62,6 +63,9 @@ public class StaffSkill implements Serializable {
     private String createTime;
 
     private String updateTime;
+
+    @TableField(exist = false)
+    private String staffName;
 
 
 }

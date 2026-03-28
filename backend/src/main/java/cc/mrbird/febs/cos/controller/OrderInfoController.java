@@ -66,10 +66,10 @@ public class OrderInfoController {
     }
 
     /**
-     * 查询订单维修步骤
+     * 查询订单服务步骤
      *
      * @param orderId 订单ID
-     * @return 订单维修步骤
+     * @return 订单服务步骤
      */
     @GetMapping("/queryRepairStep/{orderId}")
     public R queryRepairStep(@PathVariable("orderId") Integer orderId) {
@@ -155,7 +155,7 @@ public class OrderInfoController {
     }
 
     /**
-     * 维修完成
+     * 服务完成
      *
      * @param orderId 订单编号
      * @return 结果
@@ -166,7 +166,7 @@ public class OrderInfoController {
     }
 
     /**
-     * 回收完成
+     * 服务完成
      *
      * @param orderId 订单编号
      * @return 结果
@@ -177,7 +177,7 @@ public class OrderInfoController {
     }
 
     /**
-     * 更新订单维修步骤
+     * 更新订单服务步骤
      *
      * @param orderInfo 订单信息
      * @return 订单信息

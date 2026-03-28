@@ -39,7 +39,7 @@
     </div>
     <div>
       <div class="operator">
-        <a-button type="primary" ghost @click="add">新增</a-button>
+        <!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -76,6 +76,16 @@
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-icon type="eye" theme="twoTone" twoToneColor="#4a9ff5" @click="viewDetail(record)" title="查看详情"></a-icon>
+          <a-icon v-if="record.orderStatus ==  0" type="alipay" @click="orderPay(record)" title="支 付" style="margin-left: 15px"></a-icon>
+          <a-divider v-if="record.orderStatus == '2'" type="vertical" />
+          <a-tooltip title="服务作业完成" v-if="record.orderStatus == '2'">
+            <a-icon
+              type="bell"
+              theme="twoTone"
+              twoToneColor="#52c41a"
+              @click="startService(record)"
+            ></a-icon>
+          </a-tooltip>
         </template>
       </a-table>
     </div>
@@ -83,7 +93,7 @@
     <a-modal
       v-model="detailVisible"
       title="订单详情"
-      :width="900"
+      :width="1200"
       :footer="null"
       @cancel="closeDetail"
       :bodyStyle="{ padding: '24px' }"
@@ -124,10 +134,6 @@
                     <div class="description-box">{{ currentOrder.description }}</div>
                   </div>
                   <div class="info-item">
-                    <span class="info-label">单价</span>
-                    <span class="info-value price">¥{{ currentOrder.price }}</span>
-                  </div>
-                  <div class="info-item">
                     <span class="info-label">总价</span>
                     <span class="info-value total-price">¥{{ currentOrder.totalAmount }}</span>
                   </div>
@@ -147,24 +153,20 @@
                   <div class="info-item">
                     <span class="info-label">服务人员</span>
                     <div class="avatar-name">
-                      <a-avatar :src="currentOrder.staffImages" size="small" icon="user" />
+                      <a-avatar :src="'http://127.0.0.1:9527/imagesWeb/' +currentOrder.staffImages" size="small" icon="user" />
                       <span class="name">{{ currentOrder.staffName }}</span>
                     </div>
                   </div>
                   <div class="info-item">
                     <span class="info-label">购买用户</span>
                     <div class="avatar-name">
-                      <a-avatar :src="currentOrder.userImages" size="small" icon="user" />
+                      <a-avatar :src="'http://127.0.0.1:9527/imagesWeb/' +currentOrder.userImages" size="small" icon="user" />
                       <span class="name">{{ currentOrder.userName }}</span>
                     </div>
                   </div>
                   <div class="info-item">
                     <span class="info-label">联系电话</span>
                     <span class="info-value">{{ currentOrder.phone }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="info-label">用户 ID</span>
-                    <span class="info-value">{{ currentOrder.buyerId }}</span>
                   </div>
                 </div>
               </div>
@@ -178,11 +180,10 @@
                   技能图片
                 </h3>
                 <div class="image-box" v-if="currentOrder.images">
-                  <a-image
-                    :src="currentOrder.images"
-                    width="100%"
-                    :height="220"
-                    :preview-src-list="[currentOrder.images]"                    style="border-radius: 8px;"
+                  <a-avatar
+                    :src="'http://127.0.0.1:9527/imagesWeb/' + currentOrder.images.split(',')[0]"
+                    :size="220"
+                    shape="square"                    style="border-radius: 8px;"
                   />
                 </div>
                 <div class="image-placeholder" v-else>
@@ -291,17 +292,6 @@ export default {
         dataIndex: 'description',
         ellipsis: true
       }, {
-        title: '单价',
-        dataIndex: 'price',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return '¥' + text
-          } else {
-            return '- -'
-          }
-        },
-        ellipsis: true
-      }, {
         title: '总价',
         dataIndex: 'totalAmount',
         customRender: (text, row, index) => {
@@ -346,24 +336,46 @@ export default {
       }, {
         title: '服务人员',
         dataIndex: 'staffName',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
+        customRender: (text, record, index) => {
+          if (!text) return '- -'
+          return (
+            <div style="display: flex; align-items: center;">
+              <a-avatar
+                size="72"
+                src={ record.staffImages ? 'http://127.0.0.1:9527/imagesWeb/' + record.staffImages : null }
+                icon={ record.staffImages ? null : 'user' }
+                style="margin-right: 15px;"
+              />
+              <div>
+                <div>{text}</div>
+                <div style="color: #999; font-size: 12px;">{record.staffCode}</div>
+              </div>
+            </div>
+          )
         },
+        width: 250,
         ellipsis: true
       }, {
         title: '购买用户',
         dataIndex: 'userName',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
+        customRender: (text, record, index) => {
+          if (!text) return '- -'
+          return (
+            <div style="display: flex; align-items: center;">
+              <a-avatar
+                size="72"
+                src={ record.userImages ? 'http://127.0.0.1:9527/imagesWeb/' + record.userImages : null }
+                icon={ record.userImages ? null : 'user' }
+                style="margin-right: 15px;"
+              />
+              <div>
+                <div>{text}</div>
+                <div style="color: #999; font-size: 12px;">{record.userCode}</div>
+              </div>
+            </div>
+          )
         },
+        width: 250,
         ellipsis: true
       }, {
         title: '联系电话',
@@ -388,17 +400,6 @@ export default {
         },
         ellipsis: true
       }, {
-        title: '支付时间',
-        dataIndex: 'payTime',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        },
-        ellipsis: true
-      }, {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: {customRender: 'operation'}
@@ -409,6 +410,40 @@ export default {
     this.fetch()
   },
   methods: {
+    orderPay (record) {
+      let data = { outTradeNo: record.orderSn, subject: `${record.snapshotTitle}缴费信息`, totalAmount: record.totalAmount, body: '' }
+      this.$post('/cos/pay/alipayBack', data).then((r) => {
+        // console.log(r.data.msg)
+        // 添加之前先删除一下，如果单页面，页面不刷新，添加进去的内容会一直保留在页面中，二次调用form表单会出错
+        const divForm = document.getElementsByTagName('div')
+        if (divForm.length) {
+          document.body.removeChild(divForm[0])
+        }
+        const div = document.createElement('div')
+        div.innerHTML = r.data.msg // data就是接口返回的form 表单字符串
+        // console.log(div.innerHTML)
+        document.body.appendChild(div)
+        document.forms[0].setAttribute('target', '_self') // 新开窗口跳转
+        document.forms[0].submit()
+      })
+    },
+    startService (record) {
+      const that = this
+      this.$confirm({
+        title: '开始服务',
+        content: `确定要服务订单 "${record.title}" 结束吗？`,
+        centered: true,
+        onOk () {
+          that.$get('/cos/skill-order/updateStatus', {
+            id: record.id,
+            orderStatus: '3'
+          }).then((r) => {
+            that.$message.success('订单已完成')
+            that.search()
+          })
+        }
+      })
+    },
     viewDetail (record) {
       this.currentOrder = record
       this.detailVisible = true
@@ -541,6 +576,7 @@ export default {
         params.size = this.pagination.defaultPageSize
         params.current = this.pagination.defaultCurrent
       }
+      params.buyerId = this.currentUser.userId
       this.$get('/cos/skill-order/page', {
         ...params
       }).then((r) => {

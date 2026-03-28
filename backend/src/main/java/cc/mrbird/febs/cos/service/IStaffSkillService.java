@@ -30,4 +30,5 @@ public interface IStaffSkillService extends IService<StaffSkill> {
      * @return 结果
      */
     List<LinkedHashMap<String, Object>> querySkillList(String key);
+
 }

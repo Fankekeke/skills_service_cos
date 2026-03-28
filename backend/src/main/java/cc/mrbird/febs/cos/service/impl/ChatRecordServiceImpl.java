@@ -16,9 +16,9 @@ import java.util.List;
 public class ChatRecordServiceImpl extends ServiceImpl<ChatRecordMapper, ChatRecord> implements IChatRecordService {
 
     /**
-     * 根据维修员ID获取沟通联系人列表
+     * 根据服务员ID获取沟通联系人列表
      *
-     * @param staffId 维修员ID
+     * @param staffId 服务员ID
      * @return 联系人列表
      */
     @Override
